@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const Meal = require("../models/Meal");
 
 router.get("/meals", async (req, res) => {
   const { userId } = req.query;
@@ -10,12 +11,16 @@ router.get("/meals", async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    await user.clearOldMeals(); // Ensure old meals are removed
+    // ✅ Filter meals for the current day
+    await user.clearOldMeals();
+    await user.save();
 
-    const totalCaloriesConsumed = user.meals.reduce((sum, meal) => sum + meal.calories, 0);
+    const meals = user.meals;
+    const totalCaloriesConsumed = meals.reduce((sum, meal) => sum + meal.calories, 0);
     const remainingCalories = Math.max(user.calorieGoal - totalCaloriesConsumed, 0);
-      
-    res.json({ meals: user.meals || [], remainingCalories });
+    console.log('Total Calories Consumed:', totalCaloriesConsumed);
+    console.log('Remaining Calories:', remainingCalories);
+    res.json({ meals, remainingCalories });
   } catch (error) {
     console.error("❌ Error fetching meals:", error);
     res.status(500).json({ error: "Something went wrong!" });
@@ -31,25 +36,24 @@ router.post("/eat-food", async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found!" });
-    }
+    if (!user) return res.status(404).json({ error: "User not found!" });
 
     const newMeal = { foodName, calories, category, date: new Date() };
     user.meals.push(newMeal);
-    
-    // ✅ Subtract calories from remainingCalories
-    user.remainingCalories = Math.max(user.remainingCalories - calories, 0);
+
+    // ✅ Recalculate Remaining Calories
+    const totalCaloriesConsumed = user.meals.reduce((sum, meal) => sum + meal.calories, 0);
+    user.remainingCalories = Math.max(user.calorieGoal - totalCaloriesConsumed, 0);
 
     await user.save();
-    
-    res.json({ message: "Meal logged!", remainingCalories: user.remainingCalories, meals: user.meals });
 
+    res.json({ message: "Meal logged!", remainingCalories: user.remainingCalories, meals: user.meals });
   } catch (error) {
     console.error("❌ Error logging meal:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 
 

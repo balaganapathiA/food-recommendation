@@ -9,39 +9,39 @@ const Dashboard = () => {
   const [calorieGoal, setCalorieGoal] = useState(0);
   const [remainingCalories, setRemainingCalories] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true); // Unified loading state
 
   useEffect(() => {
     if (!userId) return;
-  
-    // Fetch user data (to get calorie goal)
-    fetch(`http://localhost:5000/api/users/${userId}`)
+
+    const fetchUserData = fetch(`http://localhost:5000/api/users/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("🚀 User Data:", data);
         setCalorieGoal(data.calorieGoal || 0);
       })
       .catch((err) => console.error("❌ Error fetching user data:", err));
-  
-    // Fetch meals and remaining calories
-    fetch(`http://localhost:5000/api/users/meals?userId=${userId}`)
+
+    const fetchMeals = fetch(`http://localhost:5000/api/users/meals?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("✅ Meals and Remaining Calories:", data);
-        setRemainingCalories(data.remainingCalories || calorieGoal); // Set remaining calories
+        setRemainingCalories(data.remainingCalories ?? data.calorieGoal ?? 0); 
       })
       .catch((err) => console.error("❌ Error fetching remaining calories:", err));
-  
-    // Fetch food recommendations
-    fetch(`http://localhost:5000/api/food/daily-recommendation?userId=${userId}`)
+
+    const fetchRecommendations = fetch(`http://localhost:5000/api/food/daily-recommendation?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("🔍 Recommendations received:", data.recommendations);
         setRecommendations(data.recommendations || []);
       })
       .catch((err) => console.error("❌ Error fetching recommendations:", err));
-  }, [userId]); // Dependencies: Fetch only when userId changes
-   // ✅ Dependencies: Fetch only when userId changes
+
+    Promise.all([fetchUserData, fetchMeals, fetchRecommendations])
+      .then(() => setLoading(false))
+      .catch(() => setLoading(false)); // Ensure loading stops even with errors
+  }, [userId]);
 
   return (
     <div>
@@ -52,12 +52,13 @@ const Dashboard = () => {
             userId={userId} 
             onProfileUpdate={(newCalorieGoal) => {
               setCalorieGoal(newCalorieGoal);
-              setRemainingCalories(newCalorieGoal); // Reset remaining calories when user updates profile
+              setRemainingCalories(newCalorieGoal); // Reset remaining calories on profile update
             }} 
           />
           <h3>Today's Calorie Goal: {calorieGoal} kcal</h3>
           <h3>Remaining Calories: {remainingCalories} kcal</h3>
-          {loading ? ( // Loading state
+          
+          {loading ? (
             <p>Loading...</p>
           ) : (
             <>

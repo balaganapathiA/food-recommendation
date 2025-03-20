@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-
+import { useNavigate } from 'react-router-dom';
 const MealTrackingPage = () => {
   const userId = localStorage.getItem("userId");
   const [recommendedFoods, setRecommendedFoods] = useState([]);
   const [remainingCalories, setRemainingCalories] = useState(0);
   const [eatenMeals, setEatenMeals] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   // ✅ Fetch meals and calorie data
   const fetchMealsAndCalories = async () => {
     if (!userId) return;
@@ -126,6 +126,9 @@ const MealTrackingPage = () => {
       ) : (
         <p>No meals logged yet.</p>
       )}
+      <button onClick={() => navigate('/dashboard')} style={{ marginTop: '20px' }}>
+        Back to Dashboard
+      </button>
     </div>
   );
 };
