@@ -1,0 +1,27 @@
+goal,target_calories,food,calories,protein,fat,carbs,meal_type
+weight_loss,1500,Oatmeal with Berries,300,10,5,50,breakfast
+weight_loss,1500,Greek Yogurt with Honey,250,15,8,30,breakfast
+weight_loss,1500,Avocado Toast with Eggs,350,20,18,30,breakfast
+weight_loss,1500,Grilled Chicken Salad,400,40,15,25,lunch
+weight_loss,1500,Quinoa Veggie Bowl,350,12,10,40,lunch
+weight_loss,1500,Salmon with Steamed Broccoli,450,45,20,30,dinner
+weight_loss,1500,Tofu Stir Fry with Brown Rice,400,30,12,50,dinner
+weight_loss,1500,Vegetable Soup with Whole Grain Bread,300,12,5,45,dinner
+gain_weight,2500,Oatmeal with Peanut Butter,450,20,15,60,breakfast
+gain_weight,2500,Scrambled Eggs with Avocado,500,25,30,30,breakfast
+gain_weight,2500,Granola with Greek Yogurt,550,20,18,70,breakfast
+gain_weight,2500,Grilled Chicken Breast,600,45,20,50,lunch
+gain_weight,2500,Beef Burger with Sweet Potato Fries,700,40,35,60,lunch
+gain_weight,2500,Paneer Curry with Rice,650,30,25,70,lunch
+gain_weight,2500,Salmon with Quinoa,550,40,25,45,dinner
+gain_weight,2500,Lamb Stew with Vegetables,700,50,30,40,dinner
+gain_weight,2500,Chicken Alfredo Pasta,750,45,35,80,dinner
+maintain,2000,Oats with Milk and Nuts,400,15,12,55,breakfast
+maintain,2000,Boiled Eggs with Toast,350,25,15,40,breakfast
+maintain,2000,Smoothie with Protein Powder,450,30,10,50,breakfast
+maintain,2000,Grilled Fish with Vegetables,500,40,18,30,lunch
+maintain,2000,Vegetable Stir Fry with Rice,480,20,12,60,lunch
+maintain,2000,Chicken Caesar Salad,550,45,25,20,lunch
+maintain,2000,Steak with Baked Potatoes,600,50,30,40,dinner
+maintain,2000,Pasta with Marinara Sauce,550,25,15,70,dinner
+maintain,2000,Vegetable Curry with Quinoa,500,20,18,60,dinner

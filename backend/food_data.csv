@@ -1,0 +1,25 @@
+goal,target_calories,food,calories,protein,fat,carbs,meal_type
+weight_loss,1500,Oatmeal,300,10,5,45,breakfast
+gain_weight,2500,Oatmeal,300,10,5,45,lunch
+maintain,2000,Oatmeal,300,10,5,45,breakfast
+weight_loss,1500,Grilled Chicken Salad,400,30,20,30,dinner
+gain_weight,2500,Grilled Chicken Salad,400,30,20,30,dinner
+maintain,2000,Grilled Chicken Salad,400,30,20,30,dinner
+weight_loss,1500,Vegetable Stir Fry,350,15,10,40,dinner
+gain_weight,2500,Vegetable Stir Fry,350,15,10,40,dinner
+maintain,2000,Vegetable Stir Fry,350,15,10,40,breakfast
+weight_loss,1500,Brown Rice & Beans,450,20,8,50,breakfast
+gain_weight,2500,Brown Rice & Beans,450,20,8,50,dinner
+maintain,2000,Brown Rice & Beans,450,20,8,50,breakfast
+weight_loss,1500,Fruit Salad,200,5,2,50,breakfast
+gain_weight,2500,Fruit Salad,200,5,2,50,breakfast
+maintain,2000,Fruit Salad,200,5,2,50,lunch,
+weight_loss,1500,Paneer Curry,450,20,25,30dinner
+gain_weight,2500,Paneer Curry,450,20,25,30,breakfast
+maintain,2000,Paneer Curry,450,20,25,30,dinner
+weight_loss,1500,Grilled Salmon,400,40,25,10,lunch
+gain_weight,2500,Grilled Salmon,400,40,25,10,breakfast
+maintain,2000,Grilled Salmon,400,40,25,10,lunch
+weight_loss,1500,Mushroom Risotto,380,15,18,55,lunch
+gain_weight,2500,Mushroom Risotto,380,15,18,55,lunch
+maintain,2000,Mushroom Risotto,380,15,18,55,dinner

@@ -8,6 +8,7 @@ import Community from './pages/Community';
 import HealthCalculationsPage from './pages/HealthCalculationsPage';
 import FoodRecommendationsPage from './pages/FoodRecommendationsPage';
 import MealTrackingPage from './pages/MealTrackingpage';
+import RecommendationPage from "./pages/RecommendationPage";
 const App = () => {
   return (
     <Router>
@@ -20,6 +21,8 @@ const App = () => {
         <Route path="/health-calculation" element={<HealthCalculationsPage />} />
         <Route path="/food-recommendations" element={<FoodRecommendationsPage />} />
         <Route path="/meal-tracking" element={<MealTrackingPage />} /> 
+        <Route path="/" element={<h1>Welcome to Food Recommender</h1>} />
+        <Route path="/recommendation" element={<RecommendationPage />} />
       </Routes>
     </Router>
   );
