@@ -6,19 +6,18 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-
+  
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+    
     try {
       const response = await loginUser(email, password);
       console.log("✅ Login Successful:", response);
   
       // ✅ Store user details in localStorage
-      localStorage.setItem("userId", response.userId);
       localStorage.setItem("user", JSON.stringify(response));
+      localStorage.setItem("userId", response.userId); // ✅ Ensure userId is stored
   
-      // ✅ Redirect to Dashboard
       navigate("/dashboard");
     } catch (error) {
       console.error("❌ Login Failed:", error.message);

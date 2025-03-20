@@ -2,40 +2,45 @@ const express = require("express");
 const Food = require("../models/Food");
 const User = require("../models/User");
 const mongoose = require("mongoose");
-
+const Recommendation = require("../models/Recommendation");
 const router = express.Router();
 
-router.get("/daily-recommendation", async (req, res) => {
-  const { userId } = req.query;
+router.get("/daily-recommendations", async (req, res) => {
+  console.log("🔍 Received Query:", req.query);
 
+  let { userId } = req.query;
   if (!userId) {
-    return res.status(400).json({ error: "User ID is required!" });
-  }
-
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ error: "Invalid User ID format!" });
+    console.error("❌ Missing userId in request!");
+    return res.status(400).json({ error: "User ID is required" });
   }
 
   try {
-    const user = await User.findById(userId);
-    console.log("User Found:", user); // ✅ Log user details
+    // Find recommendations
+    const recommendations = await Recommendation.find({ userId });
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found!" });
+    if (!recommendations || recommendations.length === 0) {
+      console.warn("⚠️ No recommendations found for user:", userId);
+      return res.status(404).json({ error: "No recommendations available." });
     }
 
-    if (!user.calorieGoal) {
-      return res.status(400).json({ error: "Calorie goal not set. Please update your profile!" });
-    }
-
-    const recommendedFoods = await Food.find({});
-    res.json({ calorieGoal: user.calorieGoal, recommendations: recommendedFoods });
-
+    console.log("✅ Returning Recommendations:", recommendations);
+    res.json({ recommendations }); // ✅ Always return JSON
   } catch (error) {
-    console.error("Server Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("❌ Error fetching recommendations:", error);
+    res.status(500).json({ error: "Internal server error" }); // ✅ Always return JSON on error
   }
 });
 
 
+
+router.post("/some-endpoint", async (req, res) => {
+  console.log("🔍 Received Request:", req.body); // ✅ Debugging log
+
+  if (!req.body || Object.keys(req.body).length === 0) {
+    console.error("❌ Request body is empty!");
+    return res.status(400).json({ error: "Empty request body" });
+  }
+
+  // Continue processing...
+});
 module.exports = router;

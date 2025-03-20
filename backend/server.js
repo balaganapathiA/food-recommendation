@@ -10,6 +10,8 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
 const foodRoutes = require('./routes/foodRoutes');
+const mealRoutes = require("./routes/mealRoutes");
+
 
 // Initialize App
 const app = express();
@@ -17,19 +19,24 @@ connectDB();
 
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000' }));
-app.use(bodyParser.json());
-app.use(express.json());
-
+app.use(cors());
+app.use(express.json()); // ✅ Ensure JSON parsing
+app.use(bodyParser.json()); // ✅ Handle JSON body parsing
+app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/food-recommendations', recommendationRoutes);
+app.use('/api/food/daily-recommendation', recommendationRoutes);
+// app.use('/api/food-recommendations', recommendationRoutes);
 app.use('/api/food', foodRoutes);
+app.use("/api/meals", mealRoutes);
 
 // Global Error Handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
+app.use((req, res, next) => {
+  console.log(`🔍 [${req.method}] ${req.url}`);
+  console.log("📥 Request Headers:", req.headers);
+  console.log("📦 Request Body:", req.body);
+  next();
 });
 
 const PORT = process.env.PORT || 5000;

@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Community from './pages/Community';
 import HealthCalculationsPage from './pages/HealthCalculationsPage';
 import FoodRecommendationsPage from './pages/FoodRecommendationsPage';
+import MealTrackingPage from './pages/MealTrackingpage';
 const App = () => {
   return (
     <Router>
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/communnity" element={<Community/>}/>
         <Route path="/health-calculation" element={<HealthCalculationsPage />} />
         <Route path="/food-recommendations" element={<FoodRecommendationsPage />} />
+        <Route path="/meal-tracking" element={<MealTrackingPage />} /> 
       </Routes>
     </Router>
   );
