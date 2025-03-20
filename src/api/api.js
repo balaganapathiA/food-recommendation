@@ -14,27 +14,32 @@ export const registerUser = async (userData) => {
 
 // Login User
 export const loginUser = async (email, password) => {
-  console.log("🔍 Sending Login Data:", { email, password }); // ✅ Debugging log
+  try {
+    console.log("🔍 Sending Login Data:", { email, password });
 
-  if (!email || !password) {
-    console.error("❌ Error: Email or password is missing!");
-    throw new Error("Email and password are required");
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    console.log("🔍 Response Status:", response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("❌ Login Error:", errorData);
+      throw new Error(errorData.message || "Login failed");
+    }
+
+    const data = await response.json();
+    console.log("✅ Login Successful:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ Login Error:", error);
+    throw error;
   }
-
-  const response = await fetch("http://localhost:5000/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }), // ✅ Ensure correct format
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("❌ Login Error:", errorData);
-    throw new Error(errorData.message || "Login failed");
-  }
-
-  return response.json();
 };
+
 
 
 // Fetch User Data

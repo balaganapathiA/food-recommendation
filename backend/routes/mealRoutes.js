@@ -1,64 +1,76 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const Recommendation = require("../models/Recommendation");
 
 router.get("/recommendations", async (req, res) => {
-    console.log("🔍 API Called: /api/meals/recommendations", req.query);
+  const { userId } = req.query;
+  if (!userId) return res.status(400).json({ error: "User ID is required" });
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    await user.clearOldMeals(); // ✅ Remove previous day's meals
+    res.json({ meals: user.meals });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong!" });
+  }
+});
+// In your backend route handler for /api/users/meals
+
   
-    const { userId } = req.query;
-    if (!userId) {
-      console.error("❌ Missing userId in request!");
-      return res.status(400).json({ error: "User ID is required" });
+
+router.post("/eat-food", async (req, res) => {
+  const { userId, foodName, calories, category } = req.body;
+  if (!userId || !foodName || !calories || !category)
+    return res.status(400).json({ error: "All fields are required!" });
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    user.meals.push({ foodName, calories, category, date: today });
+
+    const totalCaloriesConsumed = user.meals.reduce((sum, meal) => sum + meal.calories, 0);
+    const remainingCalories = Math.max(user.calorieGoal - totalCaloriesConsumed, 0);
+
+    await user.save();
+
+    res.json({ message: "Meal logged!", remainingCalories, meals: user.meals });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+});
+router.delete("/remove-food", async (req, res) => {
+    const { userId, mealId } = req.body;
+  
+    if (!userId || !mealId) {
+      return res.status(400).json({ error: "User ID and Meal ID are required" });
     }
   
     try {
       const user = await User.findById(userId);
       if (!user) {
-        console.error("❌ User not found:", userId);
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ error: "User not found!" });
       }
   
-      const recommendations = await Recommendation.find({ userId });
+      // ✅ Find the meal in user's meals and remove it
+      user.meals = user.meals.filter(meal => meal._id.toString() !== mealId);
+      
+      // ✅ Update remaining calories after meal removal
+      const totalEatenCalories = user.meals.reduce((sum, meal) => sum + meal.calories, 0);
+      user.remainingCalories = Math.max(user.calorieGoal - totalEatenCalories, 0);
   
-      if (!recommendations.length) {
-        console.warn("⚠️ No recommendations found for user:", userId);
-        return res.status(404).json({ error: "No recommendations available." });
-      }
-  
-      console.log("✅ Returning Recommendations:", recommendations);
-      res.json({ recommendations, remainingCalories: user.calorieGoal });
-    } catch (error) {
-      console.error("❌ Error fetching recommendations:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-  router.post("/eat-food", async (req, res) => {
-    console.log("🔍 Received Request Body:", req.body); // ✅ Debugging log
-  
-    const { userId, foodName, calories, category } = req.body;
-    if (!userId || !foodName || !calories || !category) {
-      console.error("❌ Missing required fields!");
-      return res.status(400).json({ error: "All fields are required" });
-    }
-  
-    try {
-      const user = await User.findById(userId);
-      if (!user) {
-        console.error("❌ User not found:", userId);
-        return res.status(404).json({ error: "User not found" });
-      }
-  
-      // Add food to logged meals (or update daily calorie intake)
-      user.calorieGoal = Math.max(user.calorieGoal - calories, 0); // Prevent negative values
       await user.save();
   
-      console.log("✅ Updated User Calorie Goal:", user.calorieGoal);
-      res.json({ message: "Meal logged successfully", remainingCalories: user.calorieGoal });
+      res.json({ message: "Meal removed!", remainingCalories: user.remainingCalories });
     } catch (error) {
-      console.error("❌ Error logging meal:", error);
+      console.error("❌ Error removing meal:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
   
+
 module.exports = router;

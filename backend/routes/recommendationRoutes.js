@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const Food = require("../models/Food");
 const calculateCalorieGoal = require("../utils/calorieUtils");
+const Recommendation = require("../models/Recommendation");
 
 
 router.get("/daily-recommendation", async (req, res) => {

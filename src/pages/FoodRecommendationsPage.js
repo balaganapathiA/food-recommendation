@@ -7,16 +7,23 @@ const FoodRecommendationsPage = ({ userId: propUserId }) => {  // ✅ Rename pro
   const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
-    if (!finalUserId) {
-      console.error("User ID is missing!");
-      return;
-    }
-
+    if (!userId) return;
+  
     fetch(`http://localhost:5000/api/food/daily-recommendation?userId=${finalUserId}`)
       .then(res => res.json())
-      .then(data => setRecommendations(data.recommendations || []))
-      .catch(error => console.error("Error fetching recommendations:", error));
-  }, [finalUserId]);
+      .then(data => {
+        console.log("🚀 Fetched Data:", data);
+        
+        if (!data.recommendations || data.recommendations.length === 0) {
+          console.warn("⚠ No recommendations found!");
+        }
+  
+        setCalorieGoal(data.calorieGoal || 0);
+        setRecommendations(data.recommendations || []);
+      })
+      .catch(err => console.error("❌ Error fetching recommendations:", err));
+  }, [userId]);
+  
 
   return (
     <div>

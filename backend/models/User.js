@@ -1,15 +1,25 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const mealSchema = new mongoose.Schema({
+  foodName: String,
+  calories: Number,
+  category: String,
+  date: { type: Date, default: Date.now } // ✅ Store timestamp
+});
+
+const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   password: String,
-  weight: Number, // in kg
-  height: Number, // in cm
-  age: Number,
-  gender: String, // "male" or "female"
-  activityLevel: String, // "sedentary", "light", "moderate", "active", "very active"
-  calorieGoal: Number, // This will be calculated
+  calorieGoal: Number,
+  meals: [mealSchema], // ✅ Store daily meals
 });
 
-module.exports = mongoose.model("User", UserSchema);
+userSchema.methods.clearOldMeals = function () {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  this.meals = this.meals.filter(meal => new Date(meal.date) >= today);
+  return this.save();
+};
+
+module.exports = mongoose.model("User", userSchema);

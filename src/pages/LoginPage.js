@@ -6,24 +6,42 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    
     try {
-      const response = await loginUser(email, password);
-      console.log("✅ Login Successful:", response);
+      console.log("🔍 Sending Login Data:", { email, password });
   
-      // ✅ Store user details in localStorage
-      localStorage.setItem("user", JSON.stringify(response));
-      localStorage.setItem("userId", response.userId); // ✅ Ensure userId is stored
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
   
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+  
+      const data = await response.json();
+      console.log("✅ Login Successful:", data);
+  
+      if (!data.userId || !data.name || !data.token) {
+        console.error("❌ Invalid API response, missing user data!");
+        return;
+      }
+  
+      // ✅ Store user data properly in localStorage
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("user", JSON.stringify({ userId: data.userId, name: data.name, token: data.token }));
+  
+      // ✅ Redirect to Dashboard
       navigate("/dashboard");
     } catch (error) {
-      console.error("❌ Login Failed:", error.message);
-      alert("Login Failed: " + error.message);
+      console.error("❌ Login Error:", error);
     }
   };
+  
+
   
 
   return (
